@@ -3,36 +3,40 @@
 
 // init project
 import * as express from "express";
+import AuthZenRequest from "./AuthZenRequest.ts";
+import { Request as JWTRequest } from 'express-jwt'
+import cors from 'cors'
 const app: express.Application = express();
 
-app.use(express.json())
-app.use(cors())
+app.use(express.json());
+app.use(cors());
 
 // http://expressjs.com/en/starter/basic-routing.html
 app.get("/", (request: express.Request, response: express.Response) => {
   response.sendFile(__dirname + "/views/index.html");
 });
 
-app.post('/access/v1/evaluations', async (req: JWTRequest, res: Response) => {
-  const request: AuthZenRequest = req.body
-  const identity = request.subject?.identity
-  const policyPath = request?.action?.name
-  const ownerID = request.resource?.ownerID
-  let decision = false
+app.post("/access/v1/evaluations", async (req: JWTRequest, res: Response) => {
+  console.log("Howdy there");
+  const request: AuthZenRequest = req.body;
+  const identity = request.subject?.identity;
+  const policyPath = request?.action?.name;
+  const ownerID = request.resource?.ownerID;
+  let decision = false;
   if (identity && policyPath) {
     try {
       // Call out to Axiomatics PDP
     } catch (e) {
-      console.error(e)
+      console.error(e);
     }
   }
 
   const response = JSON.stringify({
     decision,
-  })
+  });
 
-  res.status(200).send(response)
-})
+  res.status(200).send(response);
+});
 
 // listen for requests :)
 const port: string = process.env.PORT || "3000";
